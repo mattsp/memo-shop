@@ -1,21 +1,31 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { withStyles } from '@material-ui/core/styles'
+import CssBaseline from '@material-ui/core/CssBaseline'
+import TopBar from './components/TopBar'
+import './App.scss'
 
+const styles = {
+  root: {
+    flexGrow: 1
+  }
+}
 class App extends Component {
   render() {
+    const { classes } = this.props
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
-    );
+      <React.Fragment>
+        <CssBaseline />
+        <div className={classes.root}>
+          <TopBar />
+        </div>
+      </React.Fragment>
+    )
   }
 }
 
-export default App;
+App.propTypes = {
+  classes: PropTypes.object.isRequired
+}
+
+export default withStyles(styles)(App)
