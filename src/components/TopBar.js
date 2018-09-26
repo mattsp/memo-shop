@@ -34,7 +34,13 @@ class TopBar extends Component {
       <Fragment>
         <AppBar position="absolute">
           <Toolbar>
-            {navigationIconRenderer(classes)}
+            <IconButton
+              className={classes.menuButton}
+              color="inherit"
+              aria-label="Menu"
+            >
+              {navigationIconRenderer()}
+            </IconButton>
             <Typography
               variant="title"
               color="inherit"
@@ -42,6 +48,7 @@ class TopBar extends Component {
             >
               {pageTitle}
             </Typography>
+
             {actionsItemsRenderer(classes)}
             <IconButton
               aria-haspopup="true"
@@ -52,7 +59,14 @@ class TopBar extends Component {
             </IconButton>
           </Toolbar>
         </AppBar>
-        {overflowMenuRenderer(classes)}
+        <Menu
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+          open={false}
+          onClose={this.handleMenuClose}
+        >
+          {overflowMenuRenderer(classes)}
+        </Menu>
       </Fragment>
     )
   }
@@ -67,28 +81,17 @@ TopBar.propTypes = {
 }
 
 TopBar.defaultProps = {
-  navigationIconRenderer: classes => (
-    <IconButton
-      className={classes.menuButton}
-      color="inherit"
-      aria-label="Menu"
-    >
-      <MenuIcon />
-    </IconButton>
-  ),
+  navigationIconRenderer: () => <MenuIcon />,
   pageTitle: '',
-  actionsItemsRenderer: classes => <Button color="inherit">Login</Button>,
-  overflowMenuRenderer: classes => (
-    <Menu
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      open={false}
-      onClose={this.handleMenuClose}
-    >
-      <MenuItem onClick={this.handleClose}>Profile</MenuItem>
-      <MenuItem onClick={this.handleClose}>My account</MenuItem>
-    </Menu>
-  )
+  actionsItemsRenderer: () => <Button color="inherit">Login</Button>,
+  overflowMenuRenderer: () => [
+    <MenuItem key="1" onClick={this.handleClose}>
+      Profile
+    </MenuItem>,
+    <MenuItem key="2" onClick={this.handleClose}>
+      My account
+    </MenuItem>
+  ]
 }
 
 export default withStyles(styles)(TopBar)
