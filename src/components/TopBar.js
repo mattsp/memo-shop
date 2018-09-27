@@ -22,6 +22,9 @@ const styles = {
 }
 
 class TopBar extends Component {
+  handleLeftButtonClick = event => {
+    this.props.onClickLeftButton(event)
+  }
   render() {
     const {
       classes,
@@ -35,6 +38,7 @@ class TopBar extends Component {
         <AppBar position="absolute">
           <Toolbar>
             <IconButton
+              onClick={this.handleLeftButtonClick}
               className={classes.menuButton}
               color="inherit"
               aria-label="Menu"
@@ -50,13 +54,6 @@ class TopBar extends Component {
             </Typography>
 
             {actionsItemsRenderer(classes)}
-            <IconButton
-              aria-haspopup="true"
-              onClick={this.handleMobileMenuOpen}
-              color="inherit"
-            >
-              <MoreIcon />
-            </IconButton>
           </Toolbar>
         </AppBar>
         <Menu
@@ -77,21 +74,16 @@ TopBar.propTypes = {
   navigationIconRenderer: PropTypes.func,
   pageTitle: PropTypes.string,
   actionsItemsRenderer: PropTypes.func,
-  overflowMenuRenderer: PropTypes.func
+  overflowMenuRenderer: PropTypes.func,
+  onClickLeftButton: PropTypes.func
 }
 
 TopBar.defaultProps = {
   navigationIconRenderer: () => <MenuIcon />,
   pageTitle: '',
-  actionsItemsRenderer: () => <Button color="inherit">Login</Button>,
-  overflowMenuRenderer: () => [
-    <MenuItem key="1" onClick={this.handleClose}>
-      Profile
-    </MenuItem>,
-    <MenuItem key="2" onClick={this.handleClose}>
-      My account
-    </MenuItem>
-  ]
+  actionsItemsRenderer: () => {},
+  overflowMenuRenderer: () => [],
+  onClickLeftButton: () => {}
 }
 
 export default withStyles(styles)(TopBar)

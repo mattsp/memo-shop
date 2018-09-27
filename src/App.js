@@ -8,6 +8,7 @@ import ArrowBack from '@material-ui/icons/ArrowBack'
 import Delete from '@material-ui/icons/Delete'
 import IconButton from '@material-ui/core/IconButton'
 import MenuIcon from '@material-ui/icons/Menu'
+import ClearIcon from '@material-ui/icons/Clear'
 import './App.scss'
 import ShoppingList from './components/ShoppingList'
 
@@ -66,7 +67,7 @@ class App extends Component {
 
   renderNavigationIcon = () => {
     if (this.state.selectedItems.length > 0) {
-      return <ArrowBack />
+      return <ClearIcon />
     }
     return <MenuIcon />
   }
@@ -75,15 +76,21 @@ class App extends Component {
     if (this.state.selectedItems.length > 0) {
       return `${this.state.selectedItems.length} Selected`
     }
-    return undefined
+    return 'Shopping list'
   }
 
   renderActionsItems = () => {
-    return (
-      <IconButton color="inherit" aria-label="Delete">
-        <Delete />
-      </IconButton>
-    )
+    if (this.state.selectedItems.length > 0) {
+      return (
+        <IconButton
+          color="inherit"
+          aria-label="Delete"
+          onClick={this.handleDeleteAction}
+        >
+          <Delete />
+        </IconButton>
+      )
+    }
   }
 
   renderShoppingList = props => {
@@ -108,6 +115,21 @@ class App extends Component {
       })
   }
 
+  handleLeftButtonClick = event => {
+    if (this.state.selectedItems.length > 0) {
+      this.setState({ selectedItems: [] })
+    }
+  }
+
+  handleDeleteAction = event => {
+    this.setState({
+      shoppingItems: this.state.shoppingItems.filter(
+        shoppingItem => !this.state.selectedItems.includes(shoppingItem.id)
+      ),
+      selectedItems: []
+    })
+  }
+
   render() {
     const { classes } = this.props
     return (
@@ -115,6 +137,7 @@ class App extends Component {
         <CssBaseline />
         <div className={classes.root}>
           <TopBar
+            onClickLeftButton={this.handleLeftButtonClick}
             navigationIconRenderer={this.renderNavigationIcon}
             pageTitle={this.renderTitle()}
             actionsItemsRenderer={this.renderActionsItems}

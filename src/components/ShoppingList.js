@@ -17,6 +17,12 @@ import { isMobile } from 'react-device-detect'
 const styles = theme => ({
   root: {
     flexGrow: 1
+  },
+  selectedAvatar: {
+    backgroundColor: theme.palette.secondary.light
+  },
+  listItemText: {
+    userSelect: 'none'
   }
 })
 
@@ -50,7 +56,13 @@ class ShoppingList extends Component {
                 }}
               >
                 <ListItemAvatar>
-                  <Avatar>
+                  <Avatar
+                    className={
+                      selectedItems.includes(item.id)
+                        ? classes.selectedAvatar
+                        : undefined
+                    }
+                  >
                     {selectedItems.includes(item.id) ? (
                       <CheckIcon />
                     ) : (
@@ -59,6 +71,7 @@ class ShoppingList extends Component {
                   </Avatar>
                 </ListItemAvatar>
                 <ListItemText
+                  className={classes.listItemText}
                   primary={item.name}
                   secondary={item.creationDate}
                 />
