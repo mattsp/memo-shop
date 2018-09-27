@@ -132,11 +132,13 @@ class App extends Component {
 
   render() {
     const { classes } = this.props
+    const isMultiSelection = this.state.selectedItems.length > 0
     return (
       <React.Fragment>
         <CssBaseline />
         <div className={classes.root}>
           <TopBar
+            color={isMultiSelection ? 'secondary' : undefined}
             onClickLeftButton={this.handleLeftButtonClick}
             navigationIconRenderer={this.renderNavigationIcon}
             pageTitle={this.renderTitle()}

@@ -28,6 +28,7 @@ class TopBar extends Component {
   render() {
     const {
       classes,
+      color,
       navigationIconRenderer,
       pageTitle,
       actionsItemsRenderer,
@@ -35,7 +36,7 @@ class TopBar extends Component {
     } = this.props
     return (
       <Fragment>
-        <AppBar position="absolute">
+        <AppBar color={color} position="absolute">
           <Toolbar>
             <IconButton
               onClick={this.handleLeftButtonClick}
@@ -71,6 +72,7 @@ class TopBar extends Component {
 
 TopBar.propTypes = {
   classes: PropTypes.object.isRequired,
+  color: PropTypes.string,
   navigationIconRenderer: PropTypes.func,
   pageTitle: PropTypes.string,
   actionsItemsRenderer: PropTypes.func,
@@ -79,6 +81,7 @@ TopBar.propTypes = {
 }
 
 TopBar.defaultProps = {
+  color: 'primary',
   navigationIconRenderer: () => <MenuIcon />,
   pageTitle: '',
   actionsItemsRenderer: () => {},
