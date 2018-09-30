@@ -6,13 +6,16 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemAvatar from '@material-ui/core/ListItemAvatar'
 import Avatar from '@material-ui/core/Avatar'
 import ListItemText from '@material-ui/core/ListItemText'
+import Button from '@material-ui/core/Button'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import IconButton from '@material-ui/core/IconButton'
 import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket'
+import AddIcon from '@material-ui/icons/Add'
 import MoreIcon from '@material-ui/icons/MoreVert'
 import CheckIcon from '@material-ui/icons/Check'
 import Gesture from 'rc-gesture'
 import { isMobile } from 'react-device-detect'
+import EmptyState from './EmptyState'
 
 const styles = theme => ({
   root: {
@@ -23,6 +26,11 @@ const styles = theme => ({
   },
   listItemText: {
     userSelect: 'none'
+  },
+  addFab: {
+    position: 'absolute',
+    bottom: theme.spacing.unit * 2,
+    right: theme.spacing.unit * 2
   }
 })
 
@@ -33,6 +41,7 @@ class ShoppingList extends Component {
 
   render() {
     const { classes, items, selectedItems } = this.props
+    const isEmpty = items.length === 0
     return (
       <div className={classes.root}>
         <List>
@@ -84,6 +93,15 @@ class ShoppingList extends Component {
             </Gesture>
           ))}
         </List>
+        {isEmpty && (
+          <EmptyState
+            primaryTitle="Empty in Shopping"
+            secondaryTitle="Add new Shopping and it will show up here"
+          />
+        )}
+        <Button className={classes.addFab} variant="fab" color="secondary">
+          <AddIcon />
+        </Button>
       </div>
     )
   }

@@ -30,36 +30,36 @@ class App extends Component {
     this.state = {
       selectedItems: [],
       shoppingItems: [
-        {
-          id: '1',
-          name: 'course 1',
-          creationDate: '10/10/2018',
-          cost: '10 Euros'
-        },
-        {
-          id: '2',
-          name: 'course 2',
-          creationDate: '10/10/2018',
-          cost: '10 Euros'
-        },
-        {
-          id: '3',
-          name: 'course 3',
-          creationDate: '10/10/2018',
-          cost: '10 Euros'
-        },
-        {
-          id: '4',
-          name: 'course 4',
-          creationDate: '10/10/2018',
-          cost: '10 Euros'
-        },
-        {
-          id: '5',
-          name: 'course 5',
-          creationDate: '10/10/2018',
-          cost: '10 Euros'
-        }
+        // {
+        //   id: '1',
+        //   name: 'course 1',
+        //   creationDate: '10/10/2018',
+        //   cost: '10 Euros'
+        // },
+        // {
+        //   id: '2',
+        //   name: 'course 2',
+        //   creationDate: '10/10/2018',
+        //   cost: '10 Euros'
+        // },
+        // {
+        //   id: '3',
+        //   name: 'course 3',
+        //   creationDate: '10/10/2018',
+        //   cost: '10 Euros'
+        // },
+        // {
+        //   id: '4',
+        //   name: 'course 4',
+        //   creationDate: '10/10/2018',
+        //   cost: '10 Euros'
+        // },
+        // {
+        //   id: '5',
+        //   name: 'course 5',
+        //   creationDate: '10/10/2018',
+        //   cost: '10 Euros'
+        // }
       ],
       pageTitle: 'Shopping'
     }
