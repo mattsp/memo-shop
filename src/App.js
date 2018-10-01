@@ -1,7 +1,8 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import PropTypes from 'prop-types'
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
-import { withStyles } from '@material-ui/core/styles'
+import {BrowserRouter as Router, Route, Link} from 'react-router-dom'
+import moment from 'moment'
+import {withStyles} from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import TopBar from './components/TopBar'
 import ArrowBack from '@material-ui/icons/ArrowBack'
@@ -30,36 +31,12 @@ class App extends Component {
     this.state = {
       selectedItems: [],
       shoppingItems: [
-        // {
-        //   id: '1',
-        //   name: 'course 1',
-        //   creationDate: '10/10/2018',
-        //   cost: '10 Euros'
-        // },
-        // {
-        //   id: '2',
-        //   name: 'course 2',
-        //   creationDate: '10/10/2018',
-        //   cost: '10 Euros'
-        // },
-        // {
-        //   id: '3',
-        //   name: 'course 3',
-        //   creationDate: '10/10/2018',
-        //   cost: '10 Euros'
-        // },
-        // {
-        //   id: '4',
-        //   name: 'course 4',
-        //   creationDate: '10/10/2018',
-        //   cost: '10 Euros'
-        // },
-        // {
-        //   id: '5',
-        //   name: 'course 5',
-        //   creationDate: '10/10/2018',
-        //   cost: '10 Euros'
-        // }
+        // {   id: '1',   name: 'course 1',   creationDate: '10/10/2018',   cost: '10
+        // Euros' }, {   id: '2',   name: 'course 2',   creationDate: '10/10/2018',
+        // cost: '10 Euros' }, {   id: '3',   name: 'course 3',   creationDate:
+        // '10/10/2018',   cost: '10 Euros' }, {   id: '4',   name: 'course 4',
+        // creationDate: '10/10/2018',   cost: '10 Euros' }, {   id: '5',   name:
+        // 'course 5',   creationDate: '10/10/2018',   cost: '10 Euros' }
       ],
       pageTitle: 'Shopping'
     }
@@ -67,9 +44,9 @@ class App extends Component {
 
   renderNavigationIcon = () => {
     if (this.state.selectedItems.length > 0) {
-      return <ClearIcon />
+      return <ClearIcon/>
     }
-    return <MenuIcon />
+    return <MenuIcon/>
   }
 
   renderTitle = () => {
@@ -85,69 +62,90 @@ class App extends Component {
         <IconButton
           color="inherit"
           aria-label="Delete"
-          onClick={this.handleDeleteAction}
-        >
-          <Delete />
+          onClick={this.handleDeleteAction}>
+          <Delete/>
         </IconButton>
       )
     }
   }
 
   renderShoppingList = props => {
-    return (
-      <ShoppingList
-        {...props}
-        items={this.state.shoppingItems}
-        selectedItems={this.state.selectedItems}
-        onItemSelected={this.handleItemSelected}
-      />
-    )
+    return (<ShoppingList
+      {...props}
+      items={this.state.shoppingItems}
+      selectedItems={this.state.selectedItems}
+      onItemSelected={this.handleItemSelected}
+      onItemCreated={this.handleItemCreated}/>)
   }
 
   handleItemSelected = (event, id) => {
-    if (!this.state.selectedItems.includes(id))
-      this.setState({ selectedItems: [...this.state.selectedItems, id] })
-    else
+    if (!this.state.selectedItems.includes(id)) 
       this.setState({
-        selectedItems: this.state.selectedItems.filter(
-          selectedItem => selectedItem !== id
-        )
+        selectedItems: [
+          ...this.state.selectedItems,
+          id
+        ]
       })
+    else 
+      this.setState({
+        selectedItems: this
+          .state
+          .selectedItems
+          .filter(selectedItem => selectedItem !== id)
+      })
+  }
+
+  handleItemCreated = (event, name) => {
+    this.setState({
+      shoppingItems: [
+        ...this.state.shoppingItems,
+        ...[
+          {
+            id: Math.floor((Math.random() * 1000000) + 1).toString(),
+            name,
+            creationDate: moment(),
+            cost: 0
+          }
+        ]
+      ]
+    })
   }
 
   handleLeftButtonClick = event => {
     if (this.state.selectedItems.length > 0) {
-      this.setState({ selectedItems: [] })
+      this.setState({selectedItems: []})
     }
   }
 
   handleDeleteAction = event => {
     this.setState({
-      shoppingItems: this.state.shoppingItems.filter(
-        shoppingItem => !this.state.selectedItems.includes(shoppingItem.id)
-      ),
+      shoppingItems: this
+        .state
+        .shoppingItems
+        .filter(shoppingItem => !this.state.selectedItems.includes(shoppingItem.id)),
       selectedItems: []
     })
   }
 
   render() {
-    const { classes } = this.props
+    const {classes} = this.props
     const isMultiSelection = this.state.selectedItems.length > 0
     return (
       <React.Fragment>
-        <CssBaseline />
+        <CssBaseline/>
         <div className={classes.root}>
           <TopBar
-            color={isMultiSelection ? 'secondary' : undefined}
+            color={isMultiSelection
+            ? 'secondary'
+            : undefined}
             onClickLeftButton={this.handleLeftButtonClick}
             navigationIconRenderer={this.renderNavigationIcon}
             pageTitle={this.renderTitle()}
-            actionsItemsRenderer={this.renderActionsItems}
-          />
+            actionsItemsRenderer={this.renderActionsItems}/>
           <main className={classes.content}>
-            <div className={classes.appBarSpacer} />
+            <div className={classes.appBarSpacer}/>
             <Router>
-              <Route path="/" render={this.renderShoppingList} />
+              <Route path="/" render={this.renderShoppingList}/>
             </Router>
           </main>
         </div>

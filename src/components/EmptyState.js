@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Typography from '@material-ui/core/Typography'
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart'
 import Grid from '@material-ui/core/Grid'
-import { withStyles } from '@material-ui/core/styles'
+import {withStyles} from '@material-ui/core/styles'
 
 const styles = theme => ({
   root: {
@@ -19,7 +19,7 @@ const styles = theme => ({
     fontSize: 128
   }
 })
-const EmptyState = ({ classes, primaryTitle, secondaryTitle }) => {
+const EmptyState = ({classes, imageIcon, primaryTitle, secondaryTitle}) => {
   return (
     <div className={classes.root}>
       <Grid
@@ -27,9 +27,8 @@ const EmptyState = ({ classes, primaryTitle, secondaryTitle }) => {
         direction="column"
         justify="center"
         alignContent="center"
-        alignItems="center"
-      >
-        <AddShoppingCartIcon className={classes.icon} />
+        alignItems="center">
+        {imageIcon(classes)}
         <Typography color="textPrimary" variant="title" align="center">
           {primaryTitle}
         </Typography>
@@ -40,13 +39,13 @@ const EmptyState = ({ classes, primaryTitle, secondaryTitle }) => {
     </div>
   )
 }
-
 EmptyState.propTypes = {
-  image: PropTypes.element.isRequired,
-  primaryTitle: PropTypes.string.isRequired,
-  secondaryTitle: PropTypes.string.isRequired
+  imageIcon: PropTypes.func,
+  primaryTitle: PropTypes.string,
+  secondaryTitle: PropTypes.string
 }
 EmptyState.defaultProps = {
+  imageIcon: (classes) => <AddShoppingCartIcon className={classes.icon}/>,
   primaryTitle: 'No Items',
   secondaryTitle: 'Add new Items and it will show up here'
 }
