@@ -1,9 +1,8 @@
-import React, { Component, Fragment } from 'react'
+import React, {Component, Fragment} from 'react'
 import PropTypes from 'prop-types'
-import { withStyles } from '@material-ui/core/styles'
+import {withStyles} from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import IconButton from '@material-ui/core/IconButton'
 import MenuIcon from '@material-ui/icons/Menu'
@@ -11,19 +10,17 @@ import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
 import MoreIcon from '@material-ui/icons/MoreVert'
 
-const styles = {
+const styles = theme => ({
   grow: {
     flexGrow: 1
-  },
-  menuButton: {
-    marginLeft: -12,
-    marginRight: 20
   }
-}
+})
 
 class TopBar extends Component {
   handleLeftButtonClick = event => {
-    this.props.onClickLeftButton(event)
+    this
+      .props
+      .onClickLeftButton(event)
   }
   render() {
     const {
@@ -32,37 +29,34 @@ class TopBar extends Component {
       navigationIconRenderer,
       pageTitle,
       actionsItemsRenderer,
-      overflowMenuRenderer
+      overflowMenuRenderer,
+      contentRenderer
     } = this.props
     return (
       <Fragment>
         <AppBar color={color} position="absolute">
-          <Toolbar>
+          <Toolbar disableGutters>
             <IconButton
               onClick={this.handleLeftButtonClick}
-              className={classes.menuButton}
               color="inherit"
-              aria-label="Menu"
-            >
+              aria-label="Menu">
               {navigationIconRenderer()}
             </IconButton>
-            <Typography
-              variant="title"
-              color="inherit"
-              className={classes.grow}
-            >
-              {pageTitle}
-            </Typography>
-
+            {contentRenderer({classes, pageTitle})}
             {actionsItemsRenderer(classes)}
           </Toolbar>
         </AppBar>
         <Menu
-          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+          anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right'
+        }}
+          transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right'
+        }}
           open={false}
-          onClose={this.handleMenuClose}
-        >
+          onClose={this.handleMenuClose}>
           {overflowMenuRenderer(classes)}
         </Menu>
       </Fragment>
@@ -77,16 +71,18 @@ TopBar.propTypes = {
   pageTitle: PropTypes.string,
   actionsItemsRenderer: PropTypes.func,
   overflowMenuRenderer: PropTypes.func,
-  onClickLeftButton: PropTypes.func
+  onClickLeftButton: PropTypes.func,
+  contentRenderer: PropTypes.func
 }
 
 TopBar.defaultProps = {
   color: 'primary',
-  navigationIconRenderer: () => <MenuIcon />,
+  navigationIconRenderer: () => <MenuIcon/>,
   pageTitle: '',
   actionsItemsRenderer: () => {},
   overflowMenuRenderer: () => [],
-  onClickLeftButton: () => {}
+  onClickLeftButton: () => {},
+  contentRenderer: () => {}
 }
 
 export default withStyles(styles)(TopBar)

@@ -12,6 +12,9 @@ import MenuIcon from '@material-ui/icons/Menu'
 import ClearIcon from '@material-ui/icons/Clear'
 import './App.scss'
 import ShoppingList from './components/ShoppingList'
+import SearchInput from './components/SearchInput';
+import SearchIcon from '@material-ui/icons/Search';
+import Typography from '@material-ui/core/Typography'
 
 const styles = theme => ({
   root: {
@@ -38,13 +41,16 @@ class App extends Component {
         // creationDate: '10/10/2018',   cost: '10 Euros' }, {   id: '5',   name:
         // 'course 5',   creationDate: '10/10/2018',   cost: '10 Euros' }
       ],
-      pageTitle: 'Shopping'
+      pageTitle: 'Shopping',
+      showSearchInput: false
     }
   }
 
   renderNavigationIcon = () => {
     if (this.state.selectedItems.length > 0) {
       return <ClearIcon/>
+    } else if (this.state.showSearchInput) {
+      return <ArrowBack/>
     }
     return <MenuIcon/>
   }
@@ -66,6 +72,15 @@ class App extends Component {
           <Delete/>
         </IconButton>
       )
+    } else if (!this.state.showSearchInput) {
+      return (
+        <IconButton
+          color="inherit"
+          aria-label="Search"
+          onClick={this.handleSearchAction}>
+          <SearchIcon/>
+        </IconButton>
+      )
     }
   }
 
@@ -76,6 +91,17 @@ class App extends Component {
       selectedItems={this.state.selectedItems}
       onItemSelected={this.handleItemSelected}
       onItemCreated={this.handleItemCreated}/>)
+  }
+
+  renderContent = ({classes, pageTitle}) => {
+    if (this.state.showSearchInput) {
+      return (
+        <SearchInput></SearchInput>
+      )
+    }
+    return <Typography variant="title" color="inherit" className={classes.grow}>
+      {pageTitle}
+    </Typography>
   }
 
   handleItemSelected = (event, id) => {
@@ -114,6 +140,8 @@ class App extends Component {
   handleLeftButtonClick = event => {
     if (this.state.selectedItems.length > 0) {
       this.setState({selectedItems: []})
+    } else if (this.state.showSearchInput) {
+      this.setState({showSearchInput: false})
     }
   }
 
@@ -127,21 +155,30 @@ class App extends Component {
     })
   }
 
+  handleSearchAction = event => {
+    this.setState({showSearchInput: true})
+  }
+
   render() {
     const {classes} = this.props
     const isMultiSelection = this.state.selectedItems.length > 0
+    const isSearch = this.state.showSearchInput
+      ? 'default'
+      : 'primary'
+    const appBarColor = isMultiSelection
+      ? 'secondary'
+      : isSearch
     return (
       <React.Fragment>
         <CssBaseline/>
         <div className={classes.root}>
           <TopBar
-            color={isMultiSelection
-            ? 'secondary'
-            : undefined}
+            color={appBarColor}
             onClickLeftButton={this.handleLeftButtonClick}
             navigationIconRenderer={this.renderNavigationIcon}
             pageTitle={this.renderTitle()}
-            actionsItemsRenderer={this.renderActionsItems}/>
+            actionsItemsRenderer={this.renderActionsItems}
+            contentRenderer={this.renderContent}/>
           <main className={classes.content}>
             <div className={classes.appBarSpacer}/>
             <Router>
