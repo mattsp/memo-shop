@@ -4,6 +4,7 @@ import {fade} from '@material-ui/core/styles/colorManipulator';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton'
 import ClearIcon from '@material-ui/icons/Clear'
+import PropTypes from 'prop-types'
 import {withStyles} from '@material-ui/core/styles';
 const styles = theme => ({
     grow: {
@@ -32,21 +33,36 @@ const styles = theme => ({
     }
 })
 class SearchInput extends Component {
-    handleClearButtonClick = event => {}
+    handleClearButtonClick = event => {
+        this
+            .props
+            .onChange({
+                target: {
+                    value: ''
+                }
+            })
+    }
 
+    handleChange = event => {
+        this
+            .props
+            .onChange(event)
+    }
     render() {
-        const {classes} = this.props;
+        const {classes, value} = this.props;
         return (
             <div className={classes.grow}>
                 <Toolbar disableGutters>
                     <Input
                         placeholder="Search…"
+                        value={value}
                         disableUnderline
                         autoFocus
                         classes={{
                         root: classes.inputRoot,
                         input: classes.inputInput
-                    }}/>
+                    }}
+                        onChange={this.handleChange}/>
                     <IconButton
                         onClick={this.handleClearButtonClick}
                         color="inherit"
@@ -57,6 +73,16 @@ class SearchInput extends Component {
             </div>
         );
     }
+}
+
+SearchInput.propTypes = {
+    value: PropTypes.string,
+    onChange: PropTypes.func
+}
+
+SearchInput.defaultProps = {
+    value: '',
+    onChange: () => {}
 }
 
 export default withStyles(styles)(SearchInput);

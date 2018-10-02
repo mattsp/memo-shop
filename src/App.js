@@ -33,6 +33,7 @@ class App extends Component {
     super(props)
     this.state = {
       selectedItems: [],
+      filterShoppingItems: [],
       shoppingItems: [
         // {   id: '1',   name: 'course 1',   creationDate: '10/10/2018',   cost: '10
         // Euros' }, {   id: '2',   name: 'course 2',   creationDate: '10/10/2018',
@@ -42,7 +43,8 @@ class App extends Component {
         // 'course 5',   creationDate: '10/10/2018',   cost: '10 Euros' }
       ],
       pageTitle: 'Shopping',
-      showSearchInput: false
+      showSearchInput: false,
+      searchValue: ''
     }
   }
 
@@ -96,7 +98,7 @@ class App extends Component {
   renderContent = ({classes, pageTitle}) => {
     if (this.state.showSearchInput) {
       return (
-        <SearchInput></SearchInput>
+        <SearchInput onChange={this.handleSearchChange} value={this.state.searchValue}></SearchInput>
       )
     }
     return <Typography variant="title" color="inherit" className={classes.grow}>
@@ -122,18 +124,21 @@ class App extends Component {
   }
 
   handleItemCreated = (event, name) => {
-    this.setState({
-      shoppingItems: [
-        ...this.state.shoppingItems,
-        ...[
-          {
-            id: Math.floor((Math.random() * 1000000) + 1).toString(),
-            name,
-            creationDate: moment(),
-            cost: 0
-          }
-        ]
+    this.initialShoppingsItems = [
+      ...this.state.shoppingItems,
+      ...[
+        {
+          id: Math.floor((Math.random() * 1000000) + 1).toString(),
+          name,
+          creationDate: moment(),
+          cost: 0
+        }
       ]
+    ]
+    this.setState({
+      shoppingItems: this
+        .initialShoppingsItems
+        .concat()
     })
   }
 
@@ -146,17 +151,29 @@ class App extends Component {
   }
 
   handleDeleteAction = event => {
+    this.initialShoppingsItems = this
+      .state
+      .shoppingItems
+      .filter(shoppingItem => !this.state.selectedItems.includes(shoppingItem.id))
     this.setState({
       shoppingItems: this
-        .state
-        .shoppingItems
-        .filter(shoppingItem => !this.state.selectedItems.includes(shoppingItem.id)),
+        .initialShoppingsItems
+        .concat(),
       selectedItems: []
     })
   }
 
   handleSearchAction = event => {
     this.setState({showSearchInput: true})
+  }
+
+  handleSearchChange = event => {
+    this.setState({
+      searchValue: event.target.value,
+      shoppingItems: this
+        .initialShoppingsItems
+        .filter(shoppingItem => shoppingItem.name.toLowerCase().indexOf(event.target.value.toLowerCase()) !== -1 || event.target.value === '')
+    })
   }
 
   render() {
