@@ -13,6 +13,8 @@ import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket'
 import AddIcon from '@material-ui/icons/Add'
 import MoreIcon from '@material-ui/icons/MoreVert'
 import CheckIcon from '@material-ui/icons/Check'
+import DeleteIcon from '@material-ui/icons/Delete'
+import EditIcon from '@material-ui/icons/Edit'
 import Gesture from 'rc-gesture'
 import {isMobile} from 'react-device-detect'
 import EmptyState from './EmptyState'
@@ -22,6 +24,9 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
 
 const styles = theme => ({
   root: {
@@ -45,7 +50,9 @@ class ShoppingList extends Component {
     super(props)
     this.state = {
       dialogOpen: false,
-      shoppingName: undefined
+      shoppingName: undefined,
+      anchorMenuEl: null,
+      currentItemIndex: undefined
     }
   }
   handleListItemClick = (event, id) => {
@@ -77,14 +84,31 @@ class ShoppingList extends Component {
     this.handleDialogClose(event);
   }
 
+  handleClickItemMenu = (event, index) => {
+    this.setState({anchorMenuEl: event.currentTarget, currentItemIndex: index});
+  };
+
+  handleCloseItemMenu = (event, currentItemIndex, menuItemIndex) => {
+    this.setState({anchorMenuEl: null});
+    if (menuItemIndex === 0) {
+      this
+        .props
+        .onItemEdit(event, currentItemIndex);
+    } else if (menuItemIndex === 1) {
+      this
+        .props
+        .onItemDelete(event, currentItemIndex);
+    }
+  };
+
   render() {
-    const {classes, items, selectedItems} = this.props
-    const {shoppingName} = this.state
+    const {classes, items, selectedItems, optionsItem} = this.props
+    const {shoppingName, anchorMenuEl, currentItemIndex} = this.state
     const isEmpty = items.length === 0
     return (
       <div className={classes.root}>
         <List>
-          {items.map(item => (
+          {items.map((item, index) => (
             <Gesture
               key={item.id}
               onPressUp={gestureStatus => {
@@ -119,7 +143,9 @@ class ShoppingList extends Component {
                   .creationDate
                   .fromNow()}/>
                 <ListItemSecondaryAction>
-                  <IconButton aria-label="More">
+                  <IconButton
+                    aria-label="More"
+                    onClick={(event) => this.handleClickItemMenu(event, index)}>
                     <MoreIcon/>
                   </IconButton>
                 </ListItemSecondaryAction>
@@ -138,6 +164,7 @@ class ShoppingList extends Component {
           <AddIcon/>
         </Button>
         <Dialog
+          fullScreen={isMobile}
           open={this.state.dialogOpen}
           onClose={this.handleDialogClose}
           aria-labelledby="form-dialog-title">
@@ -167,6 +194,22 @@ class ShoppingList extends Component {
             </Button>
           </DialogActions>
         </Dialog>
+        <Menu
+          id="action-shoping-item-menu"
+          anchorEl={anchorMenuEl}
+          open={Boolean(anchorMenuEl)}
+          onClose={this.handleCloseItemMenu}>
+          {optionsItem.map((option, menuItemIndex) => (
+            <MenuItem
+              key={option.name}
+              onClick={event => this.handleCloseItemMenu(event, currentItemIndex, menuItemIndex)}>
+              <ListItemIcon>
+                {option.icon}
+              </ListItemIcon>
+              <ListItemText inset primary={option.name}/>
+            </MenuItem>
+          ))}
+        </Menu>
       </div>
     )
   }
@@ -177,14 +220,27 @@ ShoppingList.propTypes = {
   selectedItems: PropTypes.arrayOf(PropTypes.string.isRequired),
   items: PropTypes.arrayOf(PropTypes.shape({id: PropTypes.string.isRequired, name: PropTypes.string.isRequired, creationDate: PropTypes.object, cost: PropTypes.number.isRequired})),
   onItemSelected: PropTypes.func,
-  onItemCreated: PropTypes.func
+  onItemCreated: PropTypes.func,
+  onItemDelete: PropTypes.func,
+  onItemEdit: PropTypes.func
 }
 
 ShoppingList.defaultProps = {
   selectedItems: [],
   items: [],
+  optionsItem: [
+    {
+      name: 'Edit',
+      icon: <EditIcon></EditIcon>
+    }, {
+      name: 'Delete',
+      icon: <DeleteIcon></DeleteIcon>
+    }
+  ],
   onItemSelected: () => {},
-  onItemCreated: () => {}
+  onItemCreated: () => {},
+  onItemDelete: () => {},
+  onItemEdit: () => {}
 }
 
 export default withStyles(styles)(ShoppingList)

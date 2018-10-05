@@ -92,7 +92,9 @@ class App extends Component {
       items={this.state.shoppingItems}
       selectedItems={this.state.selectedItems}
       onItemSelected={this.handleItemSelected}
-      onItemCreated={this.handleItemCreated}/>)
+      onItemCreated={this.handleItemCreated}
+      onItemDelete={this.handleItemDelete}
+      onItemEdit={this.handleItemEdit}/>)
   }
 
   renderContent = ({classes, pageTitle}) => {
@@ -135,18 +137,30 @@ class App extends Component {
         }
       ]
     ]
-    this.setState({
-      shoppingItems: this
-        .initialShoppingsItems
-        .concat()
-    })
+    this.setState({shoppingItems: this.initialShoppingsItems})
   }
+
+  handleItemDelete = (event, index) => {
+    this.initialShoppingsItems = this
+      .state
+      .shoppingItems
+      .filter((shoppingItem, shoppingItemIndex) => shoppingItemIndex !== index);
+    console.log(this.initialShoppingsItems);
+    this.setState({shoppingItems: this.initialShoppingsItems, selectedItems: []})
+  }
+
+  handleItemEdit = (event, index) => {}
 
   handleLeftButtonClick = event => {
     if (this.state.selectedItems.length > 0) {
       this.setState({selectedItems: []})
     } else if (this.state.showSearchInput) {
-      this.setState({showSearchInput: false})
+      this.setState({
+        showSearchInput: false,
+        shoppingItems: this
+          .initialShoppingsItems
+          .concat()
+      })
     }
   }
 
@@ -155,12 +169,7 @@ class App extends Component {
       .state
       .shoppingItems
       .filter(shoppingItem => !this.state.selectedItems.includes(shoppingItem.id))
-    this.setState({
-      shoppingItems: this
-        .initialShoppingsItems
-        .concat(),
-      selectedItems: []
-    })
+    this.setState({shoppingItems: this.initialShoppingsItems, selectedItems: []})
   }
 
   handleSearchAction = event => {
