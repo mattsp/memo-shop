@@ -96,6 +96,7 @@ class App extends Component {
       .shoppingItems
       .filter(shoppingItem => shoppingItem.name.toLowerCase().indexOf(this.state.searchValue.toLowerCase()) !== -1 || this.state.searchValue === '')}
       selectedItems={this.state.selectedItems}
+      showAddButton={!this.state.showSearchInput}
       onItemSelected={this.handleItemSelected}
       onItemCreated={this.handleItemCreated}
       onItemDelete={this.handleItemDelete}

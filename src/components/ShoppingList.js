@@ -114,7 +114,7 @@ class ShoppingList extends Component {
   };
 
   render() {
-    const {classes, items, selectedItems, optionsItem} = this.props
+    const {classes, items, selectedItems, optionsItem, showAddButton} = this.props
     const {shoppingName, anchorMenuEl, currentItemId} = this.state
     const isEmpty = items.length === 0
     return (
@@ -168,13 +168,15 @@ class ShoppingList extends Component {
         {isEmpty && (<EmptyState
           primaryTitle="Empty in Shopping"
           secondaryTitle="Add new Shopping and it will show up here"/>)}
-        <Button
-          className={classes.addFab}
-          variant="fab"
-          color="secondary"
-          onClick={this.handleButtonAddClick}>
-          <AddIcon/>
-        </Button>
+        {showAddButton && (
+          <Button
+            className={classes.addFab}
+            variant="fab"
+            color="secondary"
+            onClick={this.handleButtonAddClick}>
+            <AddIcon/>
+          </Button>
+        )}
         <Dialog
           fullScreen={isMobile}
           open={this.state.dialogOpen}
@@ -231,6 +233,7 @@ class ShoppingList extends Component {
 ShoppingList.propTypes = {
   classes: PropTypes.object.isRequired,
   selectedItems: PropTypes.arrayOf(PropTypes.string.isRequired),
+  showAddButton: PropTypes.bool,
   items: PropTypes.arrayOf(PropTypes.shape({id: PropTypes.string.isRequired, name: PropTypes.string.isRequired, creationDate: PropTypes.object, cost: PropTypes.number.isRequired})),
   onItemSelected: PropTypes.func,
   onItemCreated: PropTypes.func,
@@ -240,6 +243,7 @@ ShoppingList.propTypes = {
 
 ShoppingList.defaultProps = {
   selectedItems: [],
+  showAddButton: true,
   items: [],
   optionsItem: [
     {
