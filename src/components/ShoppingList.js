@@ -50,9 +50,9 @@ class ShoppingList extends Component {
     super(props)
     this.state = {
       dialogOpen: false,
-      shoppingName: undefined,
+      shoppingName: '',
       anchorMenuEl: null,
-      currentItemIndex: undefined
+      currentItemId: undefined
     }
   }
   handleListItemClick = (event, id) => {
@@ -62,7 +62,7 @@ class ShoppingList extends Component {
   }
 
   handleButtonAddClick = event => {
-    this.setState({dialogOpen: true})
+    this.setState({dialogOpen: true, currentItemId: undefined, shoppingName: ''})
   }
 
   handleDialogClose = event => {
@@ -78,23 +78,35 @@ class ShoppingList extends Component {
   }
 
   handleDialogSave = event => {
-    this
-      .props
-      .onItemCreated(event, this.state.shoppingName);
+    if (this.state.currentItemId !== undefined) {
+      this
+        .props
+        .onItemEdit(event, this.state.currentItemId, this.state.shoppingName);
+    } else {
+      this
+        .props
+        .onItemCreated(event, this.state.shoppingName);
+    }
     this.handleDialogClose(event);
   }
 
-  handleClickItemMenu = (event, index) => {
-    this.setState({anchorMenuEl: event.currentTarget, currentItemIndex: index});
+  handleClickItemMenu = (event, id) => {
+    this.setState({
+      anchorMenuEl: event.currentTarget,
+      currentItemId: id,
+      shoppingName: this
+        .props
+        .items
+        .filter(item => item.id === id)[0]
+        .name
+    });
   };
 
   handleCloseItemMenu = (event, currentItemIndex, menuItemIndex) => {
-    this.setState({anchorMenuEl: null});
     if (menuItemIndex === 0) {
-      this
-        .props
-        .onItemEdit(event, currentItemIndex);
+      this.setState({anchorMenuEl: null, dialogOpen: true})
     } else if (menuItemIndex === 1) {
+      this.setState({anchorMenuEl: null});
       this
         .props
         .onItemDelete(event, currentItemIndex);
@@ -103,7 +115,7 @@ class ShoppingList extends Component {
 
   render() {
     const {classes, items, selectedItems, optionsItem} = this.props
-    const {shoppingName, anchorMenuEl, currentItemIndex} = this.state
+    const {shoppingName, anchorMenuEl, currentItemId} = this.state
     const isEmpty = items.length === 0
     return (
       <div className={classes.root}>
@@ -145,7 +157,7 @@ class ShoppingList extends Component {
                 <ListItemSecondaryAction>
                   <IconButton
                     aria-label="More"
-                    onClick={(event) => this.handleClickItemMenu(event, index)}>
+                    onClick={(event) => this.handleClickItemMenu(event, item.id)}>
                     <MoreIcon/>
                   </IconButton>
                 </ListItemSecondaryAction>
@@ -176,6 +188,7 @@ class ShoppingList extends Component {
             <TextField
               autoFocus
               margin="dense"
+              value={shoppingName}
               id="name"
               label="name"
               type="text"
@@ -202,7 +215,7 @@ class ShoppingList extends Component {
           {optionsItem.map((option, menuItemIndex) => (
             <MenuItem
               key={option.name}
-              onClick={event => this.handleCloseItemMenu(event, currentItemIndex, menuItemIndex)}>
+              onClick={event => this.handleCloseItemMenu(event, currentItemId, menuItemIndex)}>
               <ListItemIcon>
                 {option.icon}
               </ListItemIcon>

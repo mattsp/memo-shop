@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
+import {uniqBy} from 'lodash'
 import {BrowserRouter as Router, Route, Link} from 'react-router-dom'
 import moment from 'moment'
 import {withStyles} from '@material-ui/core/styles'
@@ -34,6 +35,7 @@ class App extends Component {
     this.state = {
       selectedItems: [],
       filterShoppingItems: [],
+      initialShoppingItems: [],
       shoppingItems: [
         // {   id: '1',   name: 'course 1',   creationDate: '10/10/2018',   cost: '10
         // Euros' }, {   id: '2',   name: 'course 2',   creationDate: '10/10/2018',
@@ -89,7 +91,10 @@ class App extends Component {
   renderShoppingList = props => {
     return (<ShoppingList
       {...props}
-      items={this.state.shoppingItems}
+      items={this
+      .state
+      .shoppingItems
+      .filter(shoppingItem => shoppingItem.name.toLowerCase().indexOf(this.state.searchValue.toLowerCase()) !== -1 || this.state.searchValue === '')}
       selectedItems={this.state.selectedItems}
       onItemSelected={this.handleItemSelected}
       onItemCreated={this.handleItemCreated}
@@ -126,7 +131,7 @@ class App extends Component {
   }
 
   handleItemCreated = (event, name) => {
-    this.initialShoppingsItems = [
+    const items = [
       ...this.state.shoppingItems,
       ...[
         {
@@ -137,52 +142,80 @@ class App extends Component {
         }
       ]
     ]
-    this.setState({shoppingItems: this.initialShoppingsItems})
+    this.setState({shoppingItems: items})
   }
 
-  handleItemDelete = (event, index) => {
-    this.initialShoppingsItems = this
-      .state
-      .shoppingItems
-      .filter((shoppingItem, shoppingItemIndex) => shoppingItemIndex !== index);
-    console.log(this.initialShoppingsItems);
-    this.setState({shoppingItems: this.initialShoppingsItems, selectedItems: []})
+  handleItemDelete = (event, id) => {
+    this.setState({
+      shoppingItems: this
+        .state
+        .shoppingItems
+        .filter((shoppingItem) => shoppingItem.id !== id),
+      selectedItems: []
+    })
   }
 
-  handleItemEdit = (event, index) => {}
+  handleItemEdit = (event, id, name) => {
+    const updateItem = {
+      ...this
+        .state
+        .shoppingItems
+        .filter(item => item.id === id),
+      name
+    };
+    this.setState({
+      shoppingItems: this
+        .state
+        .shoppingItems
+        .map((item) => {
+          if (item.id !== id) {
+            return item;
+          }
+          return {
+            ...item,
+            ...updateItem
+          };
+        })
+    })
+  }
 
   handleLeftButtonClick = event => {
     if (this.state.selectedItems.length > 0) {
       this.setState({selectedItems: []})
     } else if (this.state.showSearchInput) {
-      this.setState({
-        showSearchInput: false,
-        shoppingItems: this
-          .initialShoppingsItems
-          .concat()
-      })
+      const mergedItems = uniqBy([
+        ...this.state.shoppingItems,
+        ...this
+          .state
+          .initialShoppingItems
+          .filter(initialItem => this.state.shoppingItems.find(item => item.id === initialItem.id))
+      ], 'id')
+      this.setState({showSearchInput: false, searchValue: '', shoppingItems: mergedItems})
     }
   }
 
   handleDeleteAction = event => {
-    this.initialShoppingsItems = this
-      .state
-      .shoppingItems
-      .filter(shoppingItem => !this.state.selectedItems.includes(shoppingItem.id))
-    this.setState({shoppingItems: this.initialShoppingsItems, selectedItems: []})
+    this.setState({
+      shoppingItems: this
+        .state
+        .shoppingItems
+        .filter(shoppingItem => !this.state.selectedItems.includes(shoppingItem.id)),
+      selectedItems: []
+    })
   }
 
   handleSearchAction = event => {
-    this.setState({showSearchInput: true})
+    this.setState({
+      showSearchInput: true,
+      initialShoppingItems: this
+        .state
+        .shoppingItems
+        .concat()
+    })
   }
 
   handleSearchChange = event => {
-    this.setState({
-      searchValue: event.target.value,
-      shoppingItems: this
-        .initialShoppingsItems
-        .filter(shoppingItem => shoppingItem.name.toLowerCase().indexOf(event.target.value.toLowerCase()) !== -1 || event.target.value === '')
-    })
+    this.setState({searchValue: event.target.value})
   }
 
   render() {
